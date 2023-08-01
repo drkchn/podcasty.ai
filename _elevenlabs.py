@@ -2,7 +2,9 @@ from elevenlabs import clone, generate, play, set_api_key, VOICES_CACHE, voices
 from elevenlabs.api import History
 import os
 
-os.environ['ELEVENLABS_API_KEY'] = os.getenv("ELEVENLABS_API_KEY")
+import streamlit as st
+
+os.environ['ELEVENLABS_API_KEY'] = st.secrets["ELEVENLABS_API_KEY"]
 set_api_key(os.environ.get("ELEVENLABS_API_KEY"))
 
 def with_custom_voice(podcaster, guest, description, prompt, file_path):
