@@ -12,7 +12,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 import os
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+os.environ["OPENAI_API_KEY"] = "api-key"
 
 prompt = ChatPromptTemplate.from_messages(
     [
