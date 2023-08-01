@@ -72,3 +72,55 @@ st.button(
     args=(voice, prompt, podcaster, guest),
 )
 
+text_spinner_placeholder = st.empty()
+
+if st.session_state.text_error:
+    st.error(st.session_state.text_error)
+
+
+if st.session_state.podcast_generate:
+    st.markdown("""---""")
+    st.subheader("Read Podcast")
+    st.text_area(label="You may read podcast while audio being generated.", value=st.session_state.podcast_generate,)
+
+
+if st.session_state.output_file_path:
+    st.markdown("""---""")
+    st.subheader("Listen to Podcast")
+
+    with open(st.session_state.output_file_path, "rb") as audio_file:
+        audio_bytes = audio_file.read()
+
+    st.audio(audio_bytes, format='audio/mp3', start_time=0)
+
+def generate_podcast_text(prompt, podcaster, guest):
+    return get_response(prompt=prompt, podcaster=podcaster, guest=guest)
+
+
+def generate_podcast(voice, prompt, podcaster, guest):
+
+    if prompt == "":
+        st.session_state.text_error = "Please enter a prompt."
+        return
+
+    with text_spinner_placeholder:
+        with st.spinner("Please wait while we process your query..."):
+            g_podcast = generate_podcast_text(prompt=prompt, podcaster=podcaster, guest=guest)
+
+            st.session_state.podcast_generate = (g_podcast)
+    
+    with text_spinner_placeholder:
+        with st.spinner("Please wait while we process your query..."):
+
+            if st.session_state.input_file_path != "":
+                audio_path = with_custom_voice(podcaster=podcaster, guest=guest, description=prompt, prompt=st.session_state.podcast_generate, file_path=st.session_state.input_file_path)
+
+                if audio_path != "":
+                    st.session_state.output_file_path = audio_path
+
+            else:
+
+                audio_path = with_premade_voice(prompt=st.session_state.podcast_generate, voice=voice)
+
+                if audio_path != "":
+                    st.session_state.output_file_path = audio_path
