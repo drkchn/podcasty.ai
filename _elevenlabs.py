@@ -31,3 +31,32 @@ def with_custom_voice(podcaster, guest, description, prompt, file_path):
         
         return ""
     
+def with_premade_voice(prompt, voice):
+    audio_path = f'{voice}.mp3'
+
+    audio = generate(
+        text=prompt,
+        voice=voice,
+        model="eleven_monolingual_v1"
+    )
+
+    try:
+        with open(audio_path, 'wb') as f:
+            f.write(audio)
+
+        return audio_path
+    
+    except Exception as e:
+        print(e)
+
+        return ""
+    
+def get_voices():
+    names = []
+
+    v_list = voices()
+
+    for v in v_list:
+        names.append(v.name)
+
+    return names
